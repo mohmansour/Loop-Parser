@@ -98,14 +98,6 @@
       {
         return $this->forBlock;
       }
-      public function getFinalForBlock ($forBlock,$step)
-      {
-        $this->finalForBlock=
-        $this->finalForBlock."{".$this->forBlock.$this->step."\n"."}"."\n";
-        return $this->finalForBlock;
-      }
-
-
     public function setForBlock ($line)
       {
         $this->forBlock=$this->forBlock.$line."\n";
@@ -156,6 +148,7 @@
     */
   }
 /*For Loop Class ends*/
+ $singleLoop= new ForLoop();
 
 /*Counting Formatted Code Lines Starts*/
   while (!feof($formatted))
@@ -213,7 +206,7 @@
 
   echo "<pre>";
 
-  $singleLoop= new ForLoop();
+
 
   while (!feof($file))
    {
@@ -236,12 +229,10 @@
           for($i=0;$i<($iterations);$i++)
             {
               if($i===0){fwrite($output,"\n"."//Loop Starts \n");}
-              $token=$forLoop->getFinalForBlock($forLoop->getForBlock(),$forLoop->getStep());
+              $token="{".$forLoop->getForBlock().$forLoop->getStep()."\n"."}"."\n";
               fwrite($output,$token);
               if($i===($iterations-1)){fwrite($output,"//Loop Ends"."\n");}
             }
-              /*el mfrod yktb 7sb el iterations eli mdehalo....lkn msln lma bdelo 3 iterations byktb 6 mrat!
-              34an kda na 3mlt l form bta3t (iterations -1)*/
           $token="break; \n } \n";
           fwrite($output, $token);
         }
@@ -251,7 +242,7 @@
         }
     }
   $token = strtok($parse, "\n");
-  while ($token !== false)
+  while ($token !==false)
   {
     CheckBlock ($singleLoop,$output,$token);
     $token = strtok("\n");
@@ -259,11 +250,11 @@
 
   fclose($output);
 /*ForLoop Replaced successfully*/
-echo $parse."<br/> <br/> <br/> <br/> <hr>";
-echo $singleLoop->getForBlock()."<br/> <br/> <br/><hr>";
-echo $singleLoop->getInit()."<br/> <br/> <br/><hr>";
-echo $singleLoop->getStep()."<br/> <br/> <br/> <hr>";
-echo $singleLoop->getFor()."<br/> <br/> <br/> <hr>";
+//echo $parse."<br/> <br/> <br/> <br/> <hr>";
+//echo $singleLoop->getForBlock()."<br/> <br/> <br/><hr>";
+//echo $singleLoop->getInit()."<br/> <br/> <br/><hr>";
+//echo $singleLoop->getStep()."<br/> <br/> <br/> <hr>";
+//echo $singleLoop->getFor()."<br/> <br/> <br/> <hr>";
 echo "</pre>";
 
 ?>

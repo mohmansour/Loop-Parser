@@ -68,57 +68,6 @@ y += 10;
  
 i++;
 }
-{
-
-if (i == 1)
-y = y + 2;
-else if (i == 5)
-break;
-else
-{
-y = y * y;
-
-}
-
-y += 10;
-
- 
-i++;
-}
-{
-
-if (i == 1)
-y = y + 2;
-else if (i == 5)
-break;
-else
-{
-y = y * y;
-
-}
-
-y += 10;
-
- 
-i++;
-}
-{
-
-if (i == 1)
-y = y + 2;
-else if (i == 5)
-break;
-else
-{
-y = y * y;
-
-}
-
-y += 10;
-
- 
-i++;
-}
 //Loop Ends
 break; 
  } 
