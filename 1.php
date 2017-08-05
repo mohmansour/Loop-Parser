@@ -13,27 +13,6 @@
   $formattedLineNumber=0;
   $format="";
 /*Initializing Global Variables Ends*/
-
-/*Formatting Code Starts*/
-  function checkBrace (&$line)
-    {
-      if(strpos($line, "{")!==false && strpos($line, "{")!==0) {$line=substr_replace($line,"\n"."{ ",strpos($line,"{"), 1);}
-
-      if(strrpos($line, "}")===(strlen($line)-1)) {$line=substr_replace($line,"\n "."}",strpos($line,"}"), 1);}
-    }
-  $source = fopen("file-for-loop-1.c", "r+") or die("Unable to open file!");
-  $formatted = fopen("file-for-loop-1-formatted.c", "w+") or die("Unable to open file!");
-
-  while (!feof($source))
-   {
-      $line=trim(fgets($source));
-      checkBrace ($line);
-      fwrite($formatted,"\n".$line);
-   }
-  fclose($source);
-
-/*Formatting Code Ended*/
-
 /*For Loop Class Starts*/
   class ForLoop
   {
@@ -147,8 +126,28 @@
       }
     */
   }
+   $singleLoop= new ForLoop();
 /*For Loop Class ends*/
- $singleLoop= new ForLoop();
+
+/*Formatting Code Starts*/
+  function checkBrace (&$line)
+    {
+      if(strpos($line, "{")!==false && strpos($line, "{")!==0) {$line=substr_replace($line,"\n"."{ ",strpos($line,"{"), 1);}
+
+      if(strrpos($line, "}")===(strlen($line)-1)) {$line=substr_replace($line,"\n "."}",strpos($line,"}"), 1);}
+    }
+  $source = fopen("file-for-loop-1.c", "r+") or die("Unable to open file!");
+  $formatted = fopen("file-for-loop-1-formatted.c", "w+") or die("Unable to open file!");
+
+  while (!feof($source))
+   {
+      $line=trim(fgets($source));
+      checkBrace ($line);
+      fwrite($formatted,"\n".$line);
+   }
+  fclose($source);
+
+/*Formatting Code Ended*/
 
 /*Counting Formatted Code Lines Starts*/
   while (!feof($formatted))
@@ -250,6 +249,7 @@
 
   fclose($output);
 /*ForLoop Replaced successfully*/
+
 //echo $parse."<br/> <br/> <br/> <br/> <hr>";
 //echo $singleLoop->getForBlock()."<br/> <br/> <br/><hr>";
 //echo $singleLoop->getInit()."<br/> <br/> <br/><hr>";
