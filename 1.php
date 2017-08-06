@@ -13,6 +13,7 @@
   $formattedLineNumber=0;
   $format="";
 /*Initializing Global Variables Ends*/
+
 /*For Loop Class Starts*/
   class ForLoop
   {
@@ -126,7 +127,6 @@
       }
     */
   }
-   $singleLoop= new ForLoop();
 /*For Loop Class ends*/
 
 /*Formatting Code Starts*/
@@ -146,7 +146,6 @@
       fwrite($formatted,"\n".$line);
    }
   fclose($source);
-
 /*Formatting Code Ended*/
 
 /*Counting Formatted Code Lines Starts*/
@@ -158,98 +157,109 @@
   fclose($formatted);
 /*Counting Formatted Code Lines Ends*/
 
-/*Checking For Loop Starts*/
-  $file = fopen("file-for-loop-1-formatted.c", "r+") or die("Unable to open file!");
-  function check (&$line , &$parse , &$loop ,&$lineCounter,$ForLoop )
-      {
 
+/*Checking For Loop Starts*/
+  $index=0;
+  $ForArray = [];
+  $file = fopen("file-for-loop-1-formatted.c", "r+") or die("Unable to open file!");
+  function check (&$ForArray,&$line , &$parse , &$loop ,&$lineCounter,&$index)
+      {
         if (strpos($line ,"for")===0)
           {
+              $ForArray[$index]= new ForLoop();
               $loop=true;
-              $ForLoop->setStartLineNumber($lineCounter);
-              $ForLoop->setFor ($line);
-              $ForLoop->setInit ($line);
-              $ForLoop->setStep ($ForLoop->getFor($line));
+              $ForArray[$index]->setStartLineNumber($lineCounter);
+              $ForArray[$index]->setFor ($line);
+              $ForArray[$index]->setInit ($line);
+              $ForArray[$index]->setStep ($ForArray[$index]->getFor($line));
               $line=trim(substr_replace($line," ",0, strrpos($line,")")+1));
-              $ForLoop->setForBlock ($line);
-              $parse=$parse."//forloop->SwitchCase";
+              if($line!=""){$loop=false; $ForArray[$index]->setForBlock ($line);}
+              //$ForArray[$index]->setForBlock ($line);
 
+              $parse=$parse."//forloop->SwitchCase...".$index;
           }
 
-        else if ($loop === true)
+        else if ($loop == true)
            {
+            if($lineCounter==($ForArray[$index]->getStartLineNumber()+1) && strpos($line ,"{")!==0)
+              {$ForArray[$index]->setForBlock ($line);}
             if(strpos ($line ,"{") !== false)
              {
-                  $ForLoop->setBraceCounter ();
+                  $ForArray[$index]->setBraceCounter();
              }
-            if ($lineCounter==($ForLoop->getStartlineNumber()+1))
+            if ($lineCounter==(($ForArray[$index]->getStartlineNumber())+1))
              {
                 $line=trim (substr_replace($line," ", strpos($line,"{"),1));
-
              }
             if(strpos ($line,"}") !== false)
              {
-                $ForLoop->ResetBraceCounter();
+                $ForArray[$index]->ResetBraceCounter();
              }
 
-              if($ForLoop->getBraceCounter()==0)
+              if($ForArray[$index]->getBraceCounter()==0)
               {
                   $loop=false;
                   $line=substr_replace($line," ",strrpos($line,"}"));
+                  $ForArray[$index]->setEndLineNumber($lineCounter);
               }
-              $ForLoop->setForBlock ($line);
+              $ForArray[$index]->setForBlock ($line);
+              if($loop==false){$index++;}
            }
         else { $parse=$parse.$line."\n";}
-
       }
-
-  echo "<pre>";
-
 
 
   while (!feof($file))
    {
       $line=trim(fgets($file));
       $lineCounter++;
-      check ($line , $parse , $loop ,$lineCounter,$singleLoop);
+      check ($ForArray,$line , $parse , $loop ,$lineCounter,$index);
    }
   fclose($file);
 /*Checking For Loops Ends*/
-
+//die(var_dump($ForArray));
 /*Replace ForLoop with SwitchCase*/
   $output = fopen("output.c", "w+") or die("Unable to open file!");
-  function CheckBlock ($forLoop,&$output,$token)
+  function CheckBlock (&$ForArray,&$output,$token)
     {
-      $iterations=3; //required from User
-      if (strpos($token ,"//forloop->SwitchCase")===0)
-        {
-          $token=$forLoop->getInit()." \n switch(1) \n { \n case 1:";
-          fwrite($output, $token);
-          for($i=0;$i<($iterations);$i++)
-            {
-              if($i===0){fwrite($output,"\n"."//Loop Starts \n");}
-              $token="{".$forLoop->getForBlock().$forLoop->getStep()."\n"."}"."\n";
-              fwrite($output,$token);
-              if($i===($iterations-1)){fwrite($output,"//Loop Ends"."\n");}
-            }
-          $token="break; \n } \n";
-          fwrite($output, $token);
+        //$ind=0;
+        $iterations=array(3,2); //required from User
+
+        if (strpos($token ,"//forloop->SwitchCase...")===0)
+         {
+          for($ind=0;$ind<count($ForArray);$ind++)
+           {
+            if((strpos($token ,"//forloop->SwitchCase...".$ind)===0))
+             {
+              $token=$ForArray[$ind]->getInit()." \n switch(1) \n { \n case 1:";
+              fwrite($output, $token);
+              for($i=0;$i<($iterations[$ind]);$i++)
+               {
+                if($i===0){fwrite($output,"\n"."//Loop-".$ind."- Starts\n");}
+                $token="{ \n".$ForArray[$ind]->getForBlock().$ForArray[$ind]->getStep()."\n"."}"."\n";
+                fwrite($output,$token);
+                if($i===($iterations[$ind]-1)){fwrite($output,"\n"."//Loop-".$ind."- Ends\n");}
+               }
+            $token="break; \n } \n";
+            fwrite($output, $token);
+          }
         }
-      else
-        {
+       }
+        else
+         {
           fwrite($output,$token."\n");
-        }
+         }
     }
-  $token = strtok($parse, "\n");
+  $token = trim(strtok($parse, "\n"));
   while ($token !==false)
   {
-    CheckBlock ($singleLoop,$output,$token);
+    CheckBlock ($ForArray,$output,$token);
     $token = strtok("\n");
   }
 
   fclose($output);
 /*ForLoop Replaced successfully*/
-
+echo "<pre>";
 //echo $parse."<br/> <br/> <br/> <br/> <hr>";
 //echo $singleLoop->getForBlock()."<br/> <br/> <br/><hr>";
 //echo $singleLoop->getInit()."<br/> <br/> <br/><hr>";

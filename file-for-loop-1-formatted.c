@@ -15,6 +15,8 @@ y = x + 7;
 else
 y = x + 8;
 
+
+
 for (int i = 0; i < x; i++)
 { 
 if (i == 1)
@@ -26,10 +28,12 @@ else
 y = y * y;
 
  }
-
 y += 10;
 
  }
+
+for(int j = 2;j<y;j+=2)
+y=j++;
 
 b = y + 10;
 return 0;
