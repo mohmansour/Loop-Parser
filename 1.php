@@ -10,128 +10,153 @@
   $lineCounter=0;
   $parse="";
   $loop=false;
+  $nestedloop=false;
   $formattedLineNumber=0;
   $format="";
 /*Initializing Global Variables Ends*/
 
-/*For Loop Class Starts*/
-  class ForLoop
-  {
-   protected $StartlineNumber;
-   protected $EndLineNumber;
-   protected $braceCounter;
-   protected $forBlock;
-   //protected $children=[];
-   protected $for;
-   protected $init;
-   protected $step;
-   protected $finalForBlock;
+/*Classes Start*/
+  /*For Loop Class Starts*/
+    class ForLoop
+    {
+     protected $StartlineNumber;
+     protected $EndLineNumber;
+     protected $braceCounter;
+     protected $forBlock;
+     public $children=[];
+     protected $for;
+     protected $init;
+     protected $step;
+     protected $finalForBlock;
+     protected $maxI;
+     protected $limit;
 
-    public function __construct()
-      {
-        $StartlineNumber=0;
-        $EndLineNumber=0;
-        $braceCounter=0;
-        $forBlock="";
-        $finalForBlock="";
-        $for="";
-        $init="";
-        $step="";
-      }
+      public function __construct()
+        {
+          $StartlineNumber=0;
+          $EndLineNumber=0;
+          $braceCounter=0;
+          $forBlock="";
+          $finalForBlock="";
+          $for="";
+          $init="";
+          $step="";
+          $maxI=0;
+          $limit="";
+        }
 
-    public function getStartLineNumber ()
-      {
-        return $this ->StartlineNumber;
-      }
-
-    public function setStartLineNumber ($lineCounter)
-      {
-        $this->StartlineNumber= $lineCounter;
-      }
-
-    public function getEndLineNumber ()
-      {
-        return $this->EndlineNumber;
-      }
-
-    public function setEndLineNumber ($lineCounter)
-      {
-        $this->EndlineNumber= $lineCounter;
-      }
-
-    public function getBraceCounter ()
-      {
-        return $this->braceCounter;
-      }
-
-    public function setBraceCounter ()
-      {
-        $this->braceCounter++;
-      }
-
-    public function ResetBraceCounter ()
-      {
-        $this->braceCounter--;
-      }
-
-    public function getForBlock ()
-      {
-        return $this->forBlock;
-      }
-    public function setForBlock ($line)
-      {
-        $this->forBlock=$this->forBlock.$line."\n";
-      }
-
-    public function getFor ()
-      {
-        return $this->for;
-      }
-
-    public function setFor ($line)
-      {
-        $this->for=trim(substr($line, 0,strrpos($line,")")+1));
-      }
-
-    public function getInit ()
-      {
-        return $this->init;
-      }
-
-    public function setInit ($line)
-      {
-        $this->init=trim(substr($this->for,strpos($this->for,"(")+1,strpos($this->for,";")-3));
-      }
-
-    public function getStep ()
-      {
-        return $this->step;
-      }
-
-    public function setStep ($for)
-      {
-        $this->step=trim(substr($this->for, strrpos($this->for,";")+1 ,strrpos($this->for,")")));
-        $this->step=substr_replace($this->step,";",strrpos($this->step,")"), strrpos($this->step,")"));
-      }
-
-  /*
-    public function getNestedFor($StartlineNumber)
-      {
-        return $this->children[$StartlineNumber];
-      }
-
-    public function setNestedFor($StartlineNumber)
-      {
-        $NestedFor= new ForLoop();
-        $this->children[$StartlineNumber] = $NestedFor;
-      }
-    */
-  }
-/*For Loop Class ends*/
+      public function getMaxI()
+        {
+          return $this->maxI;
+        }
+      public function setLimit($sign,$for)
+        {
+          $this->limit=trim(substr($this->for,strpos($this->for,$sign)+1,strrpos($this->for,";")));
+          $this->limit=trim(substr_replace($this->limit," ",strrpos($this->limit,";"),strlen($this->init)));
+        }
+      public function MaxI($for)
+        {
+         if(strpos($this->for,"=")!==false)
+          {
+            $this->maxI=$this->Limit("=",$this->for);
+            if (is_numeric ($this->maxI))
+            {$this->maxI=(int)$this->maxI;}
+          }
+         else
+          {
+            if(strpos($this->for,"<")!==false)
+            {
+              $this->maxI=$this->Limit("<",$this->for);
+              if (is_numeric ($this->maxI))
+              {$this->maxI=(int)$this->maxI;
+              $this->maxI=$this->maxI-1;}
+            }
+            elseif (strpos($this->for,">")!==false)
+            {
+              $this->maxI=$this->Limit(">",$this->for);
+              if (is_numeric ($this->maxI))
+              {$this->maxI=(int)$this->maxI;
+              $this->maxI=$this->maxI+1;}
+            }
+          }
+          return $this->maxI;
+        }
+      public function getStartLineNumber ()
+        {
+          return $this ->StartlineNumber;
+        }
+      public function setStartLineNumber ($lineCounter)
+        {
+          $this->StartlineNumber= $lineCounter;
+        }
+      public function getEndLineNumber ()
+        {
+          return $this->EndlineNumber;
+        }
+      public function setEndLineNumber ($lineCounter)
+        {
+          $this->EndlineNumber= $lineCounter;
+        }
+      public function getBraceCounter ()
+        {
+          return $this->braceCounter;
+        }
+      public function setBraceCounter ()
+        {
+          $this->braceCounter++;
+        }
+      public function ResetBraceCounter ()
+        {
+          $this->braceCounter--;
+        }
+      public function getForBlock ()
+        {
+          return $this->forBlock;
+        }
+      public function setForBlock ($line)
+        {
+          $this->forBlock=$this->forBlock.$line."\n";
+        }
+      public function getFor ()
+        {
+          return $this->for;
+        }
+      public function setFor ($line)
+        {
+          $this->for=trim(substr($line, strpos($line,"for"),strpos($line,")")+1));
+        }
+      public function getInit ()
+        {
+          return $this->init;
+        }
+      public function setInit ($line)
+        {
+        $this->init=trim(substr($this->for,strpos($this->for,"(")+1,strpos($this->for,";")));
+        $this->init=trim(substr_replace($this->init," ",strpos($this->init,";")+1,strlen($this->init)));
+        }
+      public function getStep ()
+        {
+          return $this->step;
+        }
+      public function setStep ($for)
+        {
+          $this->step=trim(substr($this->for, strrpos($this->for,";")+1 ,strpos($this->for,")")));
+          $this->step=substr_replace($this->step,";",strrpos($this->step,")"), strrpos($this->step,")"));
+        }
+      public function setNestedFor($StartlineNumber)
+        {
+          $NestedFor= new ForLoop();
+          $this->children[$StartlineNumber] = $NestedFor;
+        }
+    }
+  /*For Loop Class ends*/
+/*Classes End*/
 
 /*Formatting Code Starts*/
   function checkBrace (&$line)
     {
+      if(strpos($line, "for")!==false && strpos($line, "for")!==0) {$line=substr_replace($line,"\n"."for ",strpos($line,"for"), 1);}
+
       if(strpos($line, "{")!==false && strpos($line, "{")!==0) {$line=substr_replace($line,"\n"."{ ",strpos($line,"{"), 1);}
 
       if(strrpos($line, "}")===(strlen($line)-1)) {$line=substr_replace($line,"\n "."}",strpos($line,"}"), 1);}
@@ -148,41 +173,49 @@
   fclose($source);
 /*Formatting Code Ended*/
 
-/*Counting Formatted Code Lines Starts*/
-  while (!feof($formatted))
-    {
-      $Format=trim(fgets($formatted));
-      $formattedLineNumber++;
-    }
-  fclose($formatted);
-/*Counting Formatted Code Lines Ends*/
-
-
 /*Checking For Loop Starts*/
   $index=0;
+  $nestedIndex=0;
   $ForArray = [];
   $file = fopen("file-for-loop-1-formatted.c", "r+") or die("Unable to open file!");
-  function check (&$ForArray,&$line , &$parse , &$loop ,&$lineCounter,&$index)
+  function check (&$ForArray,&$line , &$parse , &$loop,&$nestedloop ,&$lineCounter,&$index,&$nestedIndex,$forComment)
       {
-        if (strpos($line ,"for")===0)
+        if (strpos($line ,"for")===0 && $loop==false)
           {
+             echo "parent <hr>";
               $ForArray[$index]= new ForLoop();
               $loop=true;
+              $line1=trim(substr_replace($line," ",strpos($line,"for"), strlen($line)));
+              $parse=$parse.$line1."\n";
               $ForArray[$index]->setStartLineNumber($lineCounter);
               $ForArray[$index]->setFor ($line);
               $ForArray[$index]->setInit ($line);
               $ForArray[$index]->setStep ($ForArray[$index]->getFor($line));
-              $line=trim(substr_replace($line," ",0, strrpos($line,")")+1));
-              if($line!=""){$loop=false; $ForArray[$index]->setForBlock ($line);}
-              //$ForArray[$index]->setForBlock ($line);
-
-              $parse=$parse."//forloop->SwitchCase...".$index;
+              $line=trim(substr_replace($line," ",0, strpos($line,")")+1));
+              if($line!="")
+                {$loop=false; $ForArray[$index]->setForBlock ($line);}
+              $parse=$parse.$forComment."-->SwitchCase...".$index;
           }
 
-        else if ($loop == true)
+        else if ($loop == true && $line!="")
            {
-            if($lineCounter==($ForArray[$index]->getStartLineNumber()+1) && strpos($line ,"{")!==0)
-              {$ForArray[$index]->setForBlock ($line);}
+            if (strpos($line ,"for")===0)
+              {
+                echo "nested <hr>";
+                $nestedloop=true;
+                $ForArray[$index]->children[$nestedIndex]= new ForLoop();
+                $ForArray[$index]->setForBlock ($line);
+              }
+              if($nestedloop==true)
+               {
+                echo "check<br>";
+                check($ForArray[$index]->children,$line,$ForArray[$index]->setForBlock,$loop,$nestedloop,$lineCounter,$index,$nestedIndex,"//NestedForloop");
+               }
+            if(strpos($line ,"{")!==0 && $ForArray[$index]->getBraceCounter()==0)
+              {
+
+                  $ForArray[$index]->setForBlock ($line);
+              }
             if(strpos ($line ,"{") !== false)
              {
                   $ForArray[$index]->setBraceCounter();
@@ -195,16 +228,16 @@
              {
                 $ForArray[$index]->ResetBraceCounter();
              }
-
-              if($ForArray[$index]->getBraceCounter()==0)
+            if($ForArray[$index]->getBraceCounter()==0)
               {
-                  $loop=false;
-                  $line=substr_replace($line," ",strrpos($line,"}"));
-                  $ForArray[$index]->setEndLineNumber($lineCounter);
+                $loop=false;
+                $line=substr_replace($line," ",strrpos($line,"}"));
+                $ForArray[$index]->setEndLineNumber($lineCounter);
               }
               $ForArray[$index]->setForBlock ($line);
               if($loop==false){$index++;}
            }
+
         else { $parse=$parse.$line."\n";}
       }
 
@@ -213,24 +246,35 @@
    {
       $line=trim(fgets($file));
       $lineCounter++;
-      check ($ForArray,$line , $parse , $loop ,$lineCounter,$index);
+      check ($ForArray,$line , $parse , $loop,$nestedloop ,$lineCounter,$index,$nestedIndex,"//forloop");
    }
   fclose($file);
 /*Checking For Loops Ends*/
-//die(var_dump($ForArray));
 /*Replace ForLoop with SwitchCase*/
   $output = fopen("output.c", "w+") or die("Unable to open file!");
   function CheckBlock (&$ForArray,&$output,$token)
     {
-        //$ind=0;
         $iterations=array(3,2); //required from User
 
-        if (strpos($token ,"//forloop->SwitchCase...")===0)
+        if (strpos($token ,"//forloop-->SwitchCase...")===0)
          {
           for($ind=0;$ind<count($ForArray);$ind++)
            {
-            if((strpos($token ,"//forloop->SwitchCase...".$ind)===0))
+            if((strpos($token ,"//forloop-->SwitchCase...".$ind)===0))
              {
+              for($nestedInd=0;$nestedInd<count($ForArray[$ind]->children);$nestedInd++)
+                if((strpos($token ,"//NestedForloop-->SwitchCase...".$nestedInd)===0))
+                  {
+                    $token=$ForArray[$ind]->children[$nestedInd]->getInit()." \n switch(1) \n { \n case 1:";
+                    fwrite($output, $token);
+                    for($i=0;$i<($iterations[$nestedInd]);$i++)
+                      {
+                        if($i===0){fwrite($output,"\n"."//nestedLoop-".$nestedInd."- Starts\n");}
+                        $token="{ \n".$ForArray[$ind]->children[$nestedInd]->getForBlock().$ForArray[$ind]->children[$nestedInd]->getStep()."\n"."}"."\n";
+                        fwrite($output,$token);
+                        if($i===($iterations[$nestedInd]-1)){fwrite($output,"\n"."//nestedLoop-".$nestedInd."- Ends\n");}
+                      }
+                  }
               $token=$ForArray[$ind]->getInit()." \n switch(1) \n { \n case 1:";
               fwrite($output, $token);
               for($i=0;$i<($iterations[$ind]);$i++)
@@ -259,14 +303,6 @@
 
   fclose($output);
 /*ForLoop Replaced successfully*/
-echo "<pre>";
-//echo $parse."<br/> <br/> <br/> <br/> <hr>";
-//echo $singleLoop->getForBlock()."<br/> <br/> <br/><hr>";
-//echo $singleLoop->getInit()."<br/> <br/> <br/><hr>";
-//echo $singleLoop->getStep()."<br/> <br/> <br/> <hr>";
-//echo $singleLoop->getFor()."<br/> <br/> <br/> <hr>";
-echo "</pre>";
-
 ?>
 </body>
 </html>

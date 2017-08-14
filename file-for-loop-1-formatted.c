@@ -17,7 +17,8 @@ y = x + 8;
 
 
 
-for (int i = 0; i < x; i++)
+if(x>3) 
+for or(int i=0;i<x;i++)
 { 
 if (i == 1)
 y = y + 2;
@@ -32,7 +33,9 @@ y += 10;
 
  }
 
-for(int j = 2;j<y;j+=2)
+for(int j=2;j<y;j+=2)
+for(int x=3;x<9;x+=3)
+
 y=j++;
 
 b = y + 10;

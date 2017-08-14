@@ -12,7 +12,8 @@ else if(y < 200)
 y = x + 7;
 else
 y = x + 8;
-int i = 0; 
+if(x>3)
+int i=0; 
  switch(1) 
  { 
  case 1:
@@ -26,10 +27,8 @@ break;
 else
 {
 y = y * y;
-
 }
 y += 10;
-
  
 i++;
 }
@@ -42,10 +41,8 @@ break;
 else
 {
 y = y * y;
-
 }
 y += 10;
-
  
 i++;
 }
@@ -58,10 +55,8 @@ break;
 else
 {
 y = y * y;
-
 }
 y += 10;
-
  
 i++;
 }
@@ -69,7 +64,7 @@ i++;
 //Loop-0- Ends
 break; 
  } 
-int j = 2; 
+int x=3; 
  switch(1) 
  { 
  case 1:
@@ -77,12 +72,31 @@ int j = 2;
 { 
 y=j++;
  
-j+=2;
+x+=3;
 }
 { 
 y=j++;
  
-j+=2;
+x+=3;
+}
+
+//Loop-1- Ends
+break; 
+ } 
+int x=3; 
+ switch(1) 
+ { 
+ case 1:
+//Loop-1- Starts
+{ 
+y=j++;
+ 
+x+=3;
+}
+{ 
+y=j++;
+ 
+x+=3;
 }
 
 //Loop-1- Ends
