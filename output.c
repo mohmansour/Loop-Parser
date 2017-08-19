@@ -30,19 +30,7 @@ y = y * y;
 }
 y += 10;
  
-i++;
-}
-{ 
 
-if (i == 1)
-y = y + 2;
-else if (i == 5)
-break;
-else
-{
-y = y * y;
-}
-y += 10;
  
 i++;
 }
@@ -58,47 +46,48 @@ y = y * y;
 }
 y += 10;
  
+
+ 
 i++;
 }
-
 //Loop-0- Ends
 break; 
  } 
-int x=3; 
+int j=2; 
  switch(1) 
  { 
  case 1:
 //Loop-1- Starts
+int x=3; 
+ switch(1) 
+ { 
+ case 1:
+//nestedLoop-0- Starts
 { 
-y=j++;
- 
 x+=3;
 }
 { 
-y=j++;
- 
 x+=3;
 }
-
-//Loop-1- Ends
+//nestedLoop-0- Ends
 break; 
  } 
+j+=2;
 int x=3; 
  switch(1) 
  { 
  case 1:
-//Loop-1- Starts
+//nestedLoop-0- Starts
 { 
-y=j++;
- 
 x+=3;
 }
 { 
-y=j++;
- 
 x+=3;
 }
-
+//nestedLoop-0- Ends
+break; 
+ } 
+j+=2;
 //Loop-1- Ends
 break; 
  } 

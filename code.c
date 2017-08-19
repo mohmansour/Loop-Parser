@@ -28,8 +28,8 @@ if(x>3) for(int i=0;i<x;i++){
 
 for(int j=2;j<y;j+=2)
 	for(int x=3;x<9;x+=3)
-
 		y=j++;
+
 
 	b = y + 10;
 	return 0;
