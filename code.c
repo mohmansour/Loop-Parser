@@ -25,7 +25,8 @@ if(x>3) for(int i=0;i<5;i++){
 	}
 
 for(int j=2;j<5;j++){
-	for(int x=1;x<4;x++)y=j++;}
+	for(int x=1;x<4;x++)
+		y=j++;}
 
 
 	b = y + 10;

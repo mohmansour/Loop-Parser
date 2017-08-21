@@ -159,7 +159,7 @@
       {
         if (strpos($line ,"for")===0 && ($loop==false || $parentloop==true))
           {
-             //echo "parent <hr>";
+             echo "parent <hr>";
              if($parentloop==true){$index=$nestedIndex;}
               $ForArray[$index]= new ForLoop();
               $loop=true;
@@ -174,20 +174,19 @@
               if($line!="")
                 { $loop=false;$ForArray[$index]->setForBlock ($line);}
               $parse=$parse.$forComment."-->SwitchCase...".$index;
-              //echo "<pre>$parse<hr><pre/>";
-
+              if($forComment=="//NestedForloop"){$loop=true;}
           }
         else if ($loop == true && $line!="")
            {
             if (strpos($line ,"for")===0 )
               {
-                //echo "nested <br>";
+                echo "nested <br>";
                 $nestedloop=true;
                 $parentloop=true;
               }
               if($nestedloop==true )
                {
-                //echo "check<hr>";
+                echo "check<hr>";
                 check($ForArray[$index]->children,$line,$ForArray[$index]->setForBlock,$loop,$parentloop,$nestedloop,$lineCounter,$index,$nestedIndex,"//NestedForloop");
                }
             if(strpos($line ,"{")!==0 && $ForArray[$index]->getBraceCounter()==0)
@@ -209,14 +208,17 @@
             if($ForArray[$index]->getBraceCounter()==0)
              {
               $loop=false;
+              $parentloop=false;
+              $nestedloop=false;
               $line=substr_replace($line," ",strrpos($line,"}"));
               $ForArray[$index]->setEndLineNumber($lineCounter);
              }
             $ForArray[$index]->setForBlock ($line);
             if($loop==false){$index++;}
            }
-
         else { $parse=$parse.$line."\n";}
+        echo "<pre>$parse<hr><pre/>";
+        echo $loop."loop \n".$nestedloop."nestedloop \n".$parentloop."parentloop\n";
       }
 
   while (!feof($file))

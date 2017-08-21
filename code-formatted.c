@@ -33,7 +33,8 @@ y += 10;
 
 for(int j=2;j<5;j++)
 { 
-for(int x=1;x<4;x++)y=j++;
+for(int x=1;x<4;x++)
+y=j++;
  }
 
 
