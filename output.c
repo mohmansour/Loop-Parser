@@ -19,7 +19,7 @@ int i=0;
  case 1:
 //Loop-0- Starts
 { 
-
+{
 if (i == 1)
 y = y + 2;
 else if (i == 5)
@@ -30,12 +30,11 @@ y = y * y;
 }
 y += 10;
  
-
  
 i++;
 }
 { 
-
+{
 if (i == 1)
 y = y + 2;
 else if (i == 5)
@@ -46,7 +45,6 @@ y = y * y;
 }
 y += 10;
  
-
  
 i++;
 }
