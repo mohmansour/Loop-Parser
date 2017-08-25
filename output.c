@@ -19,7 +19,7 @@ int i=0;
  case 1:
 //Loop-0- Starts
 { 
-{
+
 if (i == 1)
 y = y + 2;
 else if (i == 5)
@@ -30,11 +30,12 @@ y = y * y;
 }
 y += 10;
  
+y=j++;
  
 i++;
 }
 { 
-{
+
 if (i == 1)
 y = y + 2;
 else if (i == 5)
@@ -45,6 +46,7 @@ y = y * y;
 }
 y += 10;
  
+y=j++;
  
 i++;
 }
@@ -62,9 +64,11 @@ int x=1;
  case 1:
 //nestedLoop-0- Starts
 { 
+y=j++;
 x++;
 }
 { 
+y=j++;
 x++;
 }
 //nestedLoop-0- Ends
@@ -77,9 +81,11 @@ int x=1;
  case 1:
 //nestedLoop-0- Starts
 { 
+y=j++;
 x++;
 }
 { 
+y=j++;
 x++;
 }
 //nestedLoop-0- Ends
@@ -89,7 +95,6 @@ j++;
 //Loop-1- Ends
 break; 
  } 
-}
 b = y + 10;
 return 0;
 }

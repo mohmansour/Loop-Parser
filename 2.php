@@ -154,13 +154,13 @@
   $index=0;
   $nestedIndex=0;
   $ForArray = [];
-  $keywords=1;
+  //$keywords=1;
   $file = fopen("code-formatted.c", "r+") or die("Unable to open file!");
-  function check(&$ForArray,&$line,&$parse,&$loop,&$parentloop,&$nestedloop,&$lineCounter,&$index,&$nestedIndex,$forComment,&$keywords)
+  function check(&$ForArray,&$line,&$parse,&$loop,&$parentloop,&$nestedloop,&$lineCounter,&$index,&$nestedIndex,$forComment)//&$keywords;
       {
         if (strpos($line ,"for")===0 && ($loop==false || $parentloop==true))
           {
-             echo "parent <br>";
+             echo "parent <br>";//mark1
              if($parentloop==true){$index=$nestedIndex;}
               $ForArray[$index]= new ForLoop();
               $loop=true;
@@ -177,37 +177,41 @@
               $parse=$parse.$forComment."-->SwitchCase...".$index;
           }
         else if ($loop == true && $line!="")
-           {
+                   {
             if (strpos($line ,"for")===0 )
               {
                 echo "nested <br>";
                 $nestedloop=true;
                 $parentloop=true;
               }
-             if($lineCounter==($ForArray[$index]->getStartLineNumber()+1))
-              {
-                if(strpos($line ,"for")!==false){$keywords=0;}
-              }
+              if($nestedloop==true )
+               {
+                echo "check<hr>";
+                check($ForArray[$index]->children,$line,$ForArray[$index]->setForBlock,$loop,$parentloop,$nestedloop,$lineCounter,$index,$nestedIndex,"//NestedForloop");
+               }
+            if(strpos($line ,"{")!==0 && $ForArray[$index]->getBraceCounter()==0)
+             {
+              $ForArray[$index]->setForBlock ($line);
+             }
             if(strpos ($line ,"{") !== false)
              {
               $ForArray[$index]->setBraceCounter();
+             }
+            if ($lineCounter==(($ForArray[$index]->getStartlineNumber())+1))
+             {
+              $line=trim (substr_replace($line," ", strpos($line,"{"),1));
              }
             if(strpos ($line,"}") !== false)
              {
               $ForArray[$index]->ResetBraceCounter();
              }
-            if($ForArray[$index]->getBraceCounter()==0 && $keywords==0)
+            if($ForArray[$index]->getBraceCounter()==0)
              {
               $loop=false;
               $parentloop=false;
               $nestedloop=false;
               $line=substr_replace($line," ",strrpos($line,"}"));
               $ForArray[$index]->setEndLineNumber($lineCounter);
-             }
-             elseif($nestedloop==true && $keywords==1)
-             {
-              echo "check<br>";
-              check($ForArray[$index]->children,$line,$ForArray[$index]->setForBlock,$loop,$parentloop,$nestedloop,$lineCounter,$index,$nestedIndex,"//NestedForloop",$keywords);
              }
             $ForArray[$index]->setForBlock ($line);
             if($loop==false){$index++;}
@@ -216,12 +220,11 @@
         echo "<pre>$parse<hr><pre/>";
         echo $loop."loop \n".$nestedloop."nestedloop \n".$parentloop."parentloop\n";
       }
-
   while (!feof($file))
    {
       $line=trim(fgets($file));
       $lineCounter++;
-      check ($ForArray,$line , $parse , $loop,$parentloop,$nestedloop,$lineCounter,$index,$nestedIndex,"//forloop",$keywords);
+      check ($ForArray,$line , $parse , $loop,$parentloop,$nestedloop,$lineCounter,$index,$nestedIndex,"//forloop");//,$keywords
    }
   fclose($file);
   //var_dump($parse);
