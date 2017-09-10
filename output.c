@@ -95,6 +95,5 @@ j++;
 //Loop-1- Ends
 break; 
  } 
-b = y + 10;
 return 0;
 }

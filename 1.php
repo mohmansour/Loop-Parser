@@ -13,6 +13,9 @@
 /*Reading File Ends*/
 
 /*Formatting Code Starts*/
+  $source = fopen("code.c", "r+") or die("Unable to open file!");
+  $formatted = fopen("code-formatted.c", "w+") or die("Unable to open file!");
+  $collector="";
   function checkBrace (&$line)
     {
       if(strpos($line, "for")!==false && strpos($line, "for")!==0) {$line=substr_replace($line,"\n"."for ",strpos($line,"for"), 1);}
@@ -21,15 +24,20 @@
 
       if(strrpos($line, "}")===(strlen($line)-1)) {$line=substr_replace($line,"\n "."}",strpos($line,"}"), 1);}
     }
-  $source = fopen("code.c", "r+") or die("Unable to open file!");
-  $formatted = fopen("code-formatted.c", "w+") or die("Unable to open file!");
 
   while (!feof($source))
    {
       $line=trim(fgets($source));
       checkBrace ($line);
-      fwrite($formatted,"\n".$line);
+      $collector=$collector.$line."\n";
    }
+
+  $token = trim(strtok($collector, "\n"));
+  while ($token !==false)
+  {
+     if(trim($token) !==""){fwrite($formatted,"\n".$token);}
+    $token = strtok("\n");
+  }
   fclose($source);
   fclose($formatted);
 /*Formatting Code Ended*/

@@ -154,9 +154,8 @@
   $index=0;
   $nestedIndex=0;
   $ForArray = [];
-  //$keywords=1;
   $file = fopen("code-formatted.c", "r+") or die("Unable to open file!");
-  function check(&$ForArray,&$line,&$parse,&$loop,&$parentloop,&$nestedloop,&$lineCounter,&$index,&$nestedIndex,$forComment)//&$keywords;
+  function check(&$ForArray,&$line,&$parse,&$loop,&$parentloop,&$nestedloop,&$lineCounter,&$index,&$nestedIndex)
       {
         if (strpos($line ,"for")===0 && ($loop==false || $parentloop==true))
           {
@@ -174,7 +173,7 @@
               $line=trim(substr_replace($line," ",0, strpos($line,")")+1));
               if($line!="")
                 { $loop=false;$ForArray[$index]->setForBlock ($line);}
-              $parse=$parse.$forComment."-->SwitchCase...".$index;
+              $parse=$parse."//->>".$ForArray[$index]->getStartLineNumber();
           }
         else if ($loop == true && $line!="")
                    {
@@ -187,7 +186,7 @@
               if($nestedloop==true )
                {
                 echo "check<hr>";
-                check($ForArray[$index]->children,$line,$ForArray[$index]->setForBlock,$loop,$parentloop,$nestedloop,$lineCounter,$index,$nestedIndex,"//NestedForloop");
+                check($ForArray[$index]->children,$line,$ForArray[$index]->setForBlock,$loop,$parentloop,$nestedloop,$lineCounter,$index,$nestedIndex);
                }
             if(strpos($line ,"{")!==0 && $ForArray[$index]->getBraceCounter()==0)
              {
@@ -224,10 +223,9 @@
    {
       $line=trim(fgets($file));
       $lineCounter++;
-      check ($ForArray,$line , $parse , $loop,$parentloop,$nestedloop,$lineCounter,$index,$nestedIndex,"//forloop");//,$keywords
+      check ($ForArray,$line , $parse , $loop,$parentloop,$nestedloop,$lineCounter,$index,$nestedIndex);
    }
   fclose($file);
-  //var_dump($parse);
 /*Checking For Loops Ends*/
 
 /*Replace ForLoop with SwitchCase*/
@@ -235,11 +233,11 @@
 
   function CheckBlock (&$ForArray,&$output,$token,&$iterations)
    {
-    if (strpos($token ,"//forloop-->SwitchCase...")===0)
+    if (strpos($token ,"//->>")===0)
      {
       for($ind=0;$ind<count($ForArray);$ind++)
        {
-        if((strpos($token ,"//forloop-->SwitchCase...".$ind)===0))
+        if((strpos($token ,"//->>".$ForArray[$ind]->getStartLineNumber())===0))
          {
           $token=$ForArray[$ind]->getInit()." \n switch(1) \n { \n case 1:";
           fwrite($output, $token);
@@ -252,7 +250,7 @@
             $token="{ \n".$ForArray[$ind]->getForBlock().$ForArray[$ind]->getStep()."\n"."}"."\n";
             for($nestedInd=0;$nestedInd<count($ForArray[$ind]->children);$nestedInd++)
              {
-              if((strpos($token ,"//NestedForloop-->SwitchCase...".$nestedInd)==0))
+              if((strpos($token ,"//->>".$ForArray[$ind]->children[$nestedInd]->getStartLineNumber())==0))
                {
                 $token=$ForArray[$ind]->children[$nestedInd]->getInit()." \n switch(1) \n { \n case 1:";
                 fwrite($output, $token);
